@@ -13,6 +13,9 @@ import java.util.jar.JarInputStream
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Try}
 
+/**
+ * @author Johannes Düsing
+ */
 object OpalProjectHelper {
 
   type ClassList = List[(ClassFile, URL)]
