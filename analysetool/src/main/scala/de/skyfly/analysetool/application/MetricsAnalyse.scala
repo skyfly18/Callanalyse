@@ -167,20 +167,32 @@ class MetricsAnalyse {
       var yVerOpt = ""
 
 
+      var foundX = false
       for(n <- 0 until  xVerOptNoP.size-1)
       {
-        if(xVerOptNoP(n).contains("."))
-        {
+        if (foundX) {
+          xVerOpt += xVerOptNoP(n)
+        }
+        if (xVerOptNoP(n).contains(".") && !foundX) {
           xVerOpt += xVerOptNoP(n) + "-"
+          foundX = true
+
         }
       }
       xVerOpt += xVerOptNoP.last
 
+      var found = false
       for(n <- 0 until  yVerOptNoP.size-1)
       {
-        if(yVerOptNoP(n).contains("."))
+        if (found)
+        {
+          yVerOpt += yVerOptNoP(n)
+        }
+
+        if(yVerOptNoP(n).contains(".") && !found)
         {
           yVerOpt += yVerOptNoP(n) + "-"
+          found = true
         }
       }
       yVerOpt += yVerOptNoP.last
@@ -207,11 +219,11 @@ class MetricsAnalyse {
         }
       else if((semY.getPreRelease != null && semX.getPreRelease != null) || (semY.getBuildMetadata != null && semX.getBuildMetadata != null))
         {
-          patchLevel = 4
+          patchLevel = 3
         }
       else if((semX.getBuildMetadata != null && semX.getPreRelease != null) || (semY.getPreRelease == null))
         {
-        patchLevel = 5
+        patchLevel = 3
         }
 
 

@@ -15,21 +15,35 @@ class SemVerOrdering extends Ordering[File]{
     var yVerOpt = ""
 
 
-    for(n <- 0 until  xVerOptNoP.size-1)
-      {
-        if(xVerOptNoP(n).contains("."))
-          {
-            xVerOpt += xVerOptNoP(n) + "-"
-          }
+    var foundX =false
+    for(n <- 0 until  xVerOptNoP.size-1) {
+
+      if (foundX) {
+      xVerOpt += xVerOptNoP(n)
       }
+      if (xVerOptNoP(n).contains(".") && !foundX) {
+        xVerOpt += xVerOptNoP(n) + "-"
+        foundX = true
+
+      }
+
+    }
     xVerOpt += xVerOptNoP.last
 
+    var found =false
     for(n <- 0 until  yVerOptNoP.size-1)
     {
-      if(yVerOptNoP(n).contains("."))
+      if (found)
+      {
+        yVerOpt += yVerOptNoP(n)
+      }
+
+      if(yVerOptNoP(n).contains(".") && !found)
       {
         yVerOpt += yVerOptNoP(n) + "-"
+        found = true
       }
+
     }
     yVerOpt += yVerOptNoP.last
 
