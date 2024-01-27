@@ -4,6 +4,8 @@ import de.skyfly.callanalyse.Entities.PackageName;
 import de.skyfly.callanalyse.Entities.PackageVersion;
 import de.skyfly.callanalyse.Repositories.PackageNameRepository;
 import de.skyfly.callanalyse.Repositories.PackageVersionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
@@ -19,6 +21,8 @@ public class IndexServiceAynsc {
 
     @Autowired
     PackageVersionRepository packageVersionRepository;
+
+    Logger logger = LoggerFactory.getLogger(IndexServiceAynsc.class);
 
 
 
@@ -40,9 +44,9 @@ public class IndexServiceAynsc {
                     PackageVersion packageVersion = new PackageVersion(savePack, next.ga, next.jarURL);
                     packageVersionRepository.save(packageVersion);
                 } catch (DataIntegrityViolationException ex) {
-                    System.out.println(ex);
-                    System.out.println(next.jarURL);
-                    System.out.println(next.ga);
+                    logger.error(String.valueOf(ex));
+                    logger.error(next.jarURL);
+                    logger.error(next.ga);
 
                 }
             }
@@ -50,7 +54,7 @@ public class IndexServiceAynsc {
         }
     }
 
-    @Async("taskExecutorForHeavyTasks")
+    //@Async("taskExecutorForHeavyTasks")
     protected void saveVersion(tup next, PackageName savePack)
     {
         try {
@@ -61,7 +65,7 @@ public class IndexServiceAynsc {
         }
         catch (DataIntegrityViolationException ex)
         {
-            System.out.println(ex);
+            logger.error(String.valueOf(ex));
         }
     }
 }
