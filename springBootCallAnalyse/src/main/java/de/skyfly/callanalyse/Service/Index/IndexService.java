@@ -75,6 +75,12 @@ public class IndexService {
         }
 
         logger.info(String.valueOf(mavenObject.size()));
+        while(!mavenObject.isEmpty())
+        {
+            logger.info(String.valueOf(mavenObject.size()));
+            this.wait(1000L);
+        }
+        logger.info("Finish");
 
     }
 
