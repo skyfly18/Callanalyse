@@ -1,8 +1,6 @@
 package de.skyfly.callanalyse;
 
-import de.skyfly.callanalyse.Service.Index.IndexService;
 import de.skyfly.callanalyse.config.AppConfig;
-import de.skyfly.callanalyse.config.taskConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

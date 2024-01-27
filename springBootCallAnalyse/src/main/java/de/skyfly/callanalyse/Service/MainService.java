@@ -67,7 +67,6 @@ public class MainService {
         }
 
         Iterator<PackageName> iteratorPackageName = packageNameRepository.findAll().iterator();
-        Thread thread = Thread.currentThread();
         synchronized (this) {
             while (iteratorPackageName.hasNext()) {
                 while (executor.getPoolSize() >= appConfig.getMaxAnzahlThread()) {
@@ -87,6 +86,7 @@ public class MainService {
 
             }
         }
+        logger.info("Ending the Analyse");
 
 
     }

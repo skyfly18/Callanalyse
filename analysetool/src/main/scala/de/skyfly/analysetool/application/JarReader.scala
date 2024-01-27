@@ -45,7 +45,7 @@ class JarReader(inputFilePath:String)
     listJar.foreach {
       file =>
         val projectClasses = OpalProjectHelper.readJarClasses(new FileInputStream(file), file.toURI.toURL)
-        val project = OpalProjectHelper.buildOPALProject(projectClasses.get, List[(ClassFile, URL)](), asLibrary = true, excludeJRE = true)
+        val project = OpalProjectHelper.buildOPALProject(projectClasses.get, List[(ClassFile, URL)](), asLibrary = true, excludeJRE = false)
         analyse.analyse(project, file)
     }
     val result = analyse.getResult
