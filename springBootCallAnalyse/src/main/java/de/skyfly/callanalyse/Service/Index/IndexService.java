@@ -80,7 +80,7 @@ public class IndexService {
         while(!mavenObject.isEmpty())
         {
             logger.info(String.valueOf(mavenObject.size()));
-            this.wait(1000L);
+            Thread.sleep(100000L);
         }
         logger.info("Finish");
 
