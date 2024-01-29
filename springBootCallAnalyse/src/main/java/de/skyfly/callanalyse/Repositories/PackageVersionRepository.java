@@ -4,8 +4,6 @@ import de.skyfly.callanalyse.Entities.PackageVersion;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.net.URI;
-
 @Repository
 public interface PackageVersionRepository extends CrudRepository<PackageVersion,Long> {
 
