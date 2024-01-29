@@ -129,6 +129,13 @@ class JarReaderTest extends AnyFlatSpec with Matchers{
 
   }
 
+  "The JarReader" must " not throw a Exception2" in {
+    val reader = new JarReader(getClass.getResource("/moreThanTwoClass").getPath)
+    val result = reader.calculateCallGraphMetric()
+    println(result)
+
+  }
+
 
 
 
