@@ -66,8 +66,10 @@ public class IndexService {
             mavenObject.add(new tup(identifier.toGA(),identifier.toJarLocation().toString()));
             if(count % 10000 == 0)
                 logger.info("Got " + count +" artifacts so far.");
-            if(count % 100000 == 0)
+            if(count % 100000 == 0) {
                 Thread.sleep(10000L);
+                logger.info("Aktuelle Anzahl an Elemente im Que: " + mavenObject.size());
+            }
 
             count++;
 
