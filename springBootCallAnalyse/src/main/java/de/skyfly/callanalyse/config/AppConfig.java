@@ -37,10 +37,18 @@ public class AppConfig {
     /** Index URL to use for building index. */
     private String indexurl;
 
+    /**
+     * get the max Number of Thread
+     * @return max number of Thread
+     */
     public int getMaxAnzahlThread() {
         return maxAnzahlThread;
     }
 
+    /**
+     * set the max number of thread
+     * @param maxAnzahlThread new max number of thread
+     */
     public void setMaxAnzahlThread(int maxAnzahlThread) {
         this.maxAnzahlThread = maxAnzahlThread;
     }
@@ -53,6 +61,10 @@ public class AppConfig {
         return downloadOrdnerPath;
     }
 
+    /**
+     * Sett the path for Download the files
+     * @param downloadOrdnerPath new Download path
+     */
     public void setDownloadOrdnerPath(String downloadOrdnerPath) {
         this.downloadOrdnerPath = downloadOrdnerPath;
     }
