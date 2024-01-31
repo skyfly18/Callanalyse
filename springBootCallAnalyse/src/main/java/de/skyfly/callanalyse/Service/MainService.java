@@ -58,6 +58,8 @@ public class MainService {
             try{
                 URL url = new URL(appConfig.getIndexurl());
                 indexService.indexReader(url);
+                appstatus.setBuildIndexFinish(true);
+                appStatusRepository.save(appstatus);
 
 
             } catch (MalformedURLException | InterruptedException e) {
