@@ -79,7 +79,7 @@ public class IndexService {
         logger.info(String.valueOf(mavenObject.size()));
         while(!mavenObject.isEmpty())
         {
-            logger.info(String.valueOf(mavenObject.size()));
+            logger.info("Aktualle Anzahl im Que: " + String.valueOf(mavenObject.size()));
             Thread.sleep(100000L);
         }
         logger.info("Finish");
