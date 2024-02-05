@@ -95,13 +95,19 @@ public class AnalyseService {
 
 
                 } catch (IllegalArgumentException ex) {
+                    try {
 
-                    logger.error("Keine SemVer Jars: " + ex);
-                    CalculatedResult calculatedResult = new CalculatedResult();
-                    calculatedResult.setNotSemverTrue();
-                    calculatedResult.packageName = packageName;
-                    calculatedResultRepository.save(calculatedResult);
-
+                        logger.error("Keine SemVer Jars: " + ex);
+                        CalculatedResult calculatedResult = new CalculatedResult();
+                        calculatedResult.setNotSemverTrue();
+                        calculatedResult.packageName = packageName;
+                        calculatedResultRepository.save(calculatedResult);
+                    }
+                    catch(DataIntegrityViolationException ex2)
+                    {
+                        logger.error(String.valueOf(ex2));
+                        logger.warn("Fehler bei: save SemVer");
+                    }
 
                 }
                 catch(DataIntegrityViolationException ex)
@@ -112,10 +118,17 @@ public class AnalyseService {
             }
             else
             {
-                CalculatedResult calculatedResult = new CalculatedResult();
-                calculatedResult.setDownloadExceptionTrue();
-                calculatedResult.packageName = packageName;
-                calculatedResultRepository.save(calculatedResult);
+                try {
+                    CalculatedResult calculatedResult = new CalculatedResult();
+                    calculatedResult.setDownloadExceptionTrue();
+                    calculatedResult.packageName = packageName;
+                    calculatedResultRepository.save(calculatedResult);
+                }
+                catch(DataIntegrityViolationException ex)
+                {
+                    logger.error(String.valueOf(ex));
+                    logger.warn("Fehler bei: save calculatedResult");
+                }
             }
 
             if (FileSystemUtils.deleteRecursively(filedir)) {
