@@ -127,7 +127,7 @@ public class AnalyseService {
                 catch(DataIntegrityViolationException ex)
                 {
                     logger.error(String.valueOf(ex));
-                    logger.warn("Fehler bei: save calculatedResult");
+                    logger.warn("Fehler bei: save DownloadException");
                 }
             }
 
@@ -140,10 +140,16 @@ public class AnalyseService {
         }
         else
         {
-            CalculatedResult calculatedResult = new CalculatedResult();
-            calculatedResult.setOnlyOneJarTrue();
-            calculatedResult.packageName = packageName;
-            calculatedResultRepository.save(calculatedResult);
+            try {
+                CalculatedResult calculatedResult = new CalculatedResult();
+                calculatedResult.setOnlyOneJarTrue();
+                calculatedResult.packageName = packageName;
+                calculatedResultRepository.save(calculatedResult);
+            }catch (DataIntegrityViolationException ex)
+            {
+                logger.error(String.valueOf(ex));
+                logger.warn("Fehler bei: save NoJar");
+            }
         }
 
         packageName.setProcessed(true);
