@@ -123,17 +123,13 @@ public class AnalyseService {
                         }
                     }
 
+
+
+                }finally {
                     if (FileSystemUtils.deleteRecursively(filedir)) {
                         logger.info("Der Ordner: " + filedir + " wurde gelöscht");
                     } else {
                         logger.error("Der Ordner: " + filedir + " wurde nicht gelöscht.");
-                    }
-
-                }finally {
-                    if (FileSystemUtils.deleteRecursively(filedir)) {
-                        logger.error("Der Ordner: " + filedir + " wurde gelöscht wegen unerwarten Exception");
-                    } else {
-                        logger.error("Der Ordner: " + filedir + " wurde nicht gelöscht wegen unerwarten Exception.");
                     }
                 }
             }else {
