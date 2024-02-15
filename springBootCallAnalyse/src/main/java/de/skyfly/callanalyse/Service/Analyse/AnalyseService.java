@@ -51,109 +51,106 @@ public class AnalyseService {
      */
     @Async("taskExecutorForHeavyTasks")
     public void analyseEntryPoint(String packageNameGaString) {
-        PackageName packageName = packageNameRepository.getByGaString(packageNameGaString);
-        String path = appConfig.getDownloadOrdnerPath() + packageName.getGaString();
-        if (packageName.versionsList.size() > 1) {
-            File filedir = new File(path);
-            if (!filedir.isDirectory()) {
-                if (filedir.mkdir()) {
-
-                    logger.info("Der Ordner :" + filedir +" wurde angelegt");
-
-                } else {
-
-                    logger.error("Fehler beim anlegen des Ordners");
-                    if (FileSystemUtils.deleteRecursively(filedir)) {
-                        logger.warn("Der Fehlerhafte Ordner wurde gelöscht");
-                        filedir.mkdir();
-
-                    }
-                }
-            }
-            AtomicInteger count = new AtomicInteger(0);
-            packageName.versionsList.forEach(file ->
-            {
+            PackageName packageName = packageNameRepository.getByGaString(packageNameGaString);
+            String path = appConfig.getDownloadOrdnerPath() + packageName.getGaString();
+            if (packageName.versionsList.size() > 1) {
+                File filedir = new File(path);
                 try {
-                    indexService.downloadService(file.getUrlJar(), path);
-                }catch (IOException ex)
-                {
-                    count.getAndIncrement();
-                    logger.warn("Fehler beim Download: " + file.getUrlJar());
+                    if (!filedir.isDirectory()) {
+                        if (filedir.mkdir()) {
 
-                }
-            });
-            if(count.get() < (packageName.versionsList.size()/2)) {
+                            logger.info("Der Ordner :" + filedir + " wurde angelegt");
 
+                        } else {
 
-                try {
-                    JarReader jarReader = new JarReader(path);
-                    ResultPackage resultPackage = jarReader.calculateCallGraphMetric();
-                    CalculatedResult calculatedResult = mapperService.resultPackageToCalculatedResult(resultPackage);
-                    calculatedResult.packageName = packageName;
-                    calculatedResult.setSuccessfullTrue();
-                    calculatedResultRepository.save(calculatedResult);
+                            logger.error("Fehler beim anlegen des Ordners");
+                            if (FileSystemUtils.deleteRecursively(filedir)) {
+                                logger.warn("Der Fehlerhafte Ordner wurde gelöscht");
+                                filedir.mkdir();
 
-
-                } catch (IllegalArgumentException ex) {
-                    try {
-
-                        logger.error("Keine SemVer Jars: " + ex);
-                        CalculatedResult calculatedResult = new CalculatedResult();
-                        calculatedResult.setNotSemverTrue();
-                        calculatedResult.packageName = packageName;
-                        calculatedResultRepository.save(calculatedResult);
+                            }
+                        }
                     }
-                    catch(DataIntegrityViolationException ex2)
+                    AtomicInteger count = new AtomicInteger(0);
+                    packageName.versionsList.forEach(file ->
                     {
-                        logger.error(String.valueOf(ex2));
-                        logger.warn("Fehler bei: save SemVer");
+                        try {
+                            indexService.downloadService(file.getUrlJar(), path);
+                        } catch (IOException ex) {
+                            count.getAndIncrement();
+                            logger.warn("Fehler beim Download: " + file.getUrlJar());
+
+                        }
+                    });
+                    if (count.get() < (packageName.versionsList.size() / 2)) {
+
+
+                        try {
+                            JarReader jarReader = new JarReader(path);
+                            ResultPackage resultPackage = jarReader.calculateCallGraphMetric();
+                            CalculatedResult calculatedResult = mapperService.resultPackageToCalculatedResult(resultPackage);
+                            calculatedResult.packageName = packageName;
+                            calculatedResult.setSuccessfullTrue();
+                            calculatedResultRepository.save(calculatedResult);
+
+
+                        } catch (IllegalArgumentException ex) {
+                            try {
+
+                                logger.error("Keine SemVer Jars: " + ex);
+                                CalculatedResult calculatedResult = new CalculatedResult();
+                                calculatedResult.setNotSemverTrue();
+                                calculatedResult.packageName = packageName;
+                                calculatedResultRepository.save(calculatedResult);
+                            } catch (DataIntegrityViolationException ex2) {
+                                logger.error(String.valueOf(ex2));
+                                logger.warn("Fehler bei: save SemVer");
+                            }
+
+                        } catch (DataIntegrityViolationException ex) {
+                            logger.error(String.valueOf(ex));
+                            logger.warn("Fehler bei: save calculatedResult");
+                        }
+                    } else {
+                        try {
+                            CalculatedResult calculatedResult = new CalculatedResult();
+                            calculatedResult.setDownloadExceptionTrue();
+                            calculatedResult.packageName = packageName;
+                            calculatedResultRepository.save(calculatedResult);
+                        } catch (DataIntegrityViolationException ex) {
+                            logger.error(String.valueOf(ex));
+                            logger.warn("Fehler bei: save DownloadException");
+                        }
                     }
 
+                    if (FileSystemUtils.deleteRecursively(filedir)) {
+                        logger.info("Der Ordner: " + filedir + " wurde gelöscht");
+                    } else {
+                        logger.error("Der Ordner: " + filedir + " wurde nicht gelöscht.");
+                    }
+
+                }finally {
+                    if (FileSystemUtils.deleteRecursively(filedir)) {
+                        logger.error("Der Ordner: " + filedir + " wurde gelöscht wegen unerwarten Exception");
+                    } else {
+                        logger.error("Der Ordner: " + filedir + " wurde nicht gelöscht wegen unerwarten Exception.");
+                    }
                 }
-                catch(DataIntegrityViolationException ex)
-                {
-                    logger.error(String.valueOf(ex));
-                    logger.warn("Fehler bei: save calculatedResult");
-                }
-            }
-            else
-            {
+            }else {
                 try {
                     CalculatedResult calculatedResult = new CalculatedResult();
-                    calculatedResult.setDownloadExceptionTrue();
+                    calculatedResult.setOnlyOneJarTrue();
                     calculatedResult.packageName = packageName;
                     calculatedResultRepository.save(calculatedResult);
-                }
-                catch(DataIntegrityViolationException ex)
-                {
+                } catch (DataIntegrityViolationException ex) {
                     logger.error(String.valueOf(ex));
-                    logger.warn("Fehler bei: save DownloadException");
+                    logger.warn("Fehler bei: save NoJar");
                 }
             }
 
-            if (FileSystemUtils.deleteRecursively(filedir)) {
-                logger.info("Der Ordner: " + filedir + " wurde gelöscht");
-            } else {
-                logger.error("Der Ordner: " + filedir + " wurde nicht gelöscht.");
-            }
+            packageName.setProcessed(true);
+            packageNameRepository.save(packageName);
 
-        }
-        else
-        {
-            try {
-                CalculatedResult calculatedResult = new CalculatedResult();
-                calculatedResult.setOnlyOneJarTrue();
-                calculatedResult.packageName = packageName;
-                calculatedResultRepository.save(calculatedResult);
-            }catch (DataIntegrityViolationException ex)
-            {
-                logger.error(String.valueOf(ex));
-                logger.warn("Fehler bei: save NoJar");
-            }
-        }
-
-        packageName.setProcessed(true);
-        packageNameRepository.save(packageName);
     }
 
 }
