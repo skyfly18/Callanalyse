@@ -7,7 +7,7 @@ public class AppConfig {
     /**
      * Maximum number of threads to use when running the application.
      */
-    private int maxAnzahlThread = 100;
+    private int maxAnzahlThread = 25;
 
     /**
      * Download path for saving all files.
