@@ -131,6 +131,8 @@ public class AnalyseService {
                     } else {
                         logger.error("Der Ordner: " + filedir + " wurde nicht gelöscht.");
                     }
+                    packageName.setProcessed(true);
+                    packageNameRepository.save(packageName);
                 }
             }else {
                 try {
@@ -142,10 +144,11 @@ public class AnalyseService {
                     logger.error(String.valueOf(ex));
                     logger.warn("Fehler bei: save NoJar");
                 }
+                packageName.setProcessed(true);
+                packageNameRepository.save(packageName);
             }
 
-            packageName.setProcessed(true);
-            packageNameRepository.save(packageName);
+
 
     }
 
